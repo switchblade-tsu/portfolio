@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMDD Journal — Case Study · Genesis De Leon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#F0EBE1;
+  --ink:#141210;
+  --rust:#A83E0A;
+  --muted:rgba(20,18,16,.38);
+  --ease-expo:cubic-bezier(0.16,1,0.3,1);
+}
+html{overflow-x:hidden}
+body{background:var(--cream);color:var(--ink);font-family:"EB Garamond",serif;cursor:none;overflow-x:hidden}
+
+/* GRAIN */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:500;opacity:.038;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px}
+
+/* CURSOR */
+#cursor-dot{width:5px;height:5px;background:var(--ink);border-radius:50%;position:fixed;pointer-events:none;z-index:8000;transform:translate(-50%,-50%)}
+#cursor-circle{width:38px;height:38px;border:1px solid rgba(20,18,16,.22);border-radius:50%;position:fixed;pointer-events:none;z-index:7999;transform:translate(-50%,-50%)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:400;display:flex;justify-content:space-between;align-items:center;padding:1.8rem 2.8rem;mix-blend-mode:difference}
+.nav-logo{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream);text-decoration:none}
+.nav-back{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--cream);text-decoration:none;display:flex;align-items:center;gap:.6rem;transition:gap .3s var(--ease-expo)}
+.nav-back:hover{gap:1rem}
+.nav-back-arrow{display:inline-block;transition:transform .3s var(--ease-expo)}
+.nav-back:hover .nav-back-arrow{transform:translateX(-4px)}
+
+/* HERO */
+.cs-hero{height:100vh;background:var(--ink);display:flex;flex-direction:column;justify-content:flex-end;padding:0 2.8rem 3.5rem;position:relative;overflow:hidden}
+.cs-hero-bg{position:absolute;inset:0;opacity:.18}
+.cs-hero-bg-text{font-family:"Bebas Neue",sans-serif;font-size:32vw;line-height:.85;color:var(--cream);position:absolute;bottom:-2rem;left:-.02em;pointer-events:none;user-select:none;letter-spacing:-.02em}
+.cs-hero-eyebrow{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(240,235,225,.3);margin-bottom:1.5rem;opacity:0;transform:translateY(12px)}
+.cs-hero-title{font-family:"Bebas Neue",sans-serif;font-size:clamp(4rem,11vw,10rem);line-height:.84;letter-spacing:-.015em;color:var(--cream);margin-bottom:2.5rem;overflow:hidden}
+.cs-hero-title .line{display:block;overflow:hidden}
+.cs-hero-title .w{display:inline-block;transform:translateY(110%)}
+.cs-hero-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;padding-top:2.5rem;border-top:1px solid rgba(240,235,225,.1);opacity:0;transform:translateY(16px)}
+.cs-hero-meta-item{}
+.cs-meta-label{font-family:"Space Mono",monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,235,225,.25);margin-bottom:.5rem}
+.cs-meta-val{font-family:"EB Garamond",serif;font-size:1.05rem;color:rgba(240,235,225,.7)}
+
+/* SECTIONS */
+.cs-section{padding:7rem 2.8rem}
+.cs-section-dark{background:var(--ink);padding:7rem 2.8rem}
+
+/* SECTION LABEL */
+.cs-label{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--rust);margin-bottom:1.5rem;opacity:0;transform:translateY(12px)}
+.cs-label-light{color:rgba(240,235,225,.3)}
+
+/* PROBLEM */
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start}
+.problem-heading{font-family:"Bebas Neue",sans-serif;font-size:clamp(3rem,6vw,5.5rem);line-height:.88;color:var(--ink);overflow:hidden}
+.problem-heading .line{display:block;overflow:hidden}
+.problem-heading .w{display:inline-block;transform:translateY(110%)}
+.problem-body{font-family:"EB Garamond",serif;font-size:1.12rem;line-height:1.9;color:var(--muted);opacity:0;transform:translateY(16px)}
+.problem-body + .problem-body{margin-top:1.2rem}
+.problem-quote{margin-top:3rem;padding:2rem 2.5rem;border-left:2px solid var(--rust);opacity:0;transform:translateY(16px)}
+.problem-quote p{font-family:"EB Garamond",serif;font-style:italic;font-size:1.3rem;line-height:1.65;color:var(--ink)}
+
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(20,18,16,.08);border-bottom:1px solid rgba(20,18,16,.08)}
+.stat-cell{padding:3rem 2.8rem;border-right:1px solid rgba(20,18,16,.08);opacity:0;transform:translateY(20px)}
+.stat-cell:last-child{border-right:none}
+.stat-num{font-family:"Bebas Neue",sans-serif;font-size:clamp(3rem,6vw,5rem);line-height:.9;color:var(--ink);margin-bottom:.5rem}
+.stat-desc{font-family:"Space Mono",monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* INSIGHT */
+.insight-section{background:var(--ink)}
+.insight-inner{padding:7rem 2.8rem}
+.insight-heading{font-family:"Bebas Neue",sans-serif;font-size:clamp(3rem,6vw,5.5rem);line-height:.88;color:var(--cream);margin-bottom:3rem;overflow:hidden}
+.insight-heading .line{display:block;overflow:hidden}
+.insight-heading .w{display:inline-block;transform:translateY(110%)}
+.insight-list{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(240,235,225,.06)}
+.insight-item{background:var(--ink);padding:2.5rem;opacity:0;transform:translateY(16px)}
+.insight-item-num{font-family:"Bebas Neue",sans-serif;font-size:3.5rem;line-height:1;color:rgba(240,235,225,.06);margin-bottom:-.5rem}
+.insight-item-title{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--rust);margin-bottom:.75rem}
+.insight-item-body{font-family:"EB Garamond",serif;font-size:1.05rem;line-height:1.8;color:rgba(240,235,225,.55)}
+
+/* FEATURE BREAKDOWN */
+.features-heading{font-family:"Bebas Neue",sans-serif;font-size:clamp(3rem,6vw,5.5rem);line-height:.88;color:var(--ink);margin-bottom:4rem;overflow:hidden}
+.features-heading .line{display:block;overflow:hidden}
+.features-heading .w{display:inline-block;transform:translateY(110%)}
+.feature-list{display:flex;flex-direction:column;gap:0}
+.feature-item{display:grid;grid-template-columns:80px 1fr 1fr;align-items:start;padding:2.5rem 0;border-bottom:1px solid rgba(20,18,16,.08);opacity:0;transform:translateY(16px)}
+.feature-item:first-child{border-top:1px solid rgba(20,18,16,.08)}
+.feature-num{font-family:"Bebas Neue",sans-serif;font-size:2rem;color:rgba(20,18,16,.12);line-height:1;padding-top:.1rem}
+.feature-name{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);padding-top:.2rem}
+.feature-desc{font-family:"EB Garamond",serif;font-size:1.05rem;line-height:1.75;color:var(--muted)}
+
+/* APP PREVIEW — mock UI */
+.app-preview{background:var(--ink);padding:7rem 2.8rem}
+.app-preview-heading{font-family:"Bebas Neue",sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);line-height:.9;color:var(--cream);margin-bottom:4rem;overflow:hidden}
+.app-preview-heading .line{display:block;overflow:hidden}
+.app-preview-heading .w{display:inline-block;transform:translateY(110%)}
+
+/* Phone mockup */
+.phones{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;align-items:flex-end}
+.phone{width:280px;flex-shrink:0;opacity:0;transform:translateY(40px)}
+.phone-frame{background:#0A0908;border-radius:40px;padding:12px;box-shadow:0 40px 120px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.08)}
+.phone-notch{width:90px;height:28px;background:#0A0908;border-radius:0 0 16px 16px;margin:0 auto 8px;position:relative;z-index:1}
+.phone-screen{background:#1A1614;border-radius:28px;overflow:hidden;min-height:520px;padding:1.5rem}
+
+/* screen components */
+.phone-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.phone-nav-title{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.1em;color:rgba(240,235,225,.4)}
+.phone-nav-icon{width:6px;height:6px;border-radius:50%;background:var(--rust)}
+.phone-section-label{font-family:"Space Mono",monospace;font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:rgba(240,235,225,.25);margin-bottom:.6rem}
+.phone-heading{font-family:"EB Garamond",serif;font-style:italic;font-size:1rem;color:rgba(240,235,225,.8);margin-bottom:1.2rem}
+
+/* mood slider */
+.mood-track{height:4px;background:rgba(240,235,225,.08);border-radius:2px;position:relative;margin-bottom:.5rem}
+.mood-fill{height:100%;border-radius:2px;background:linear-gradient(to right,#A83E0A,rgba(240,235,225,.6));width:70%}
+.mood-thumb{width:12px;height:12px;background:var(--cream);border-radius:50%;position:absolute;top:50%;left:70%;transform:translate(-50%,-50%);box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.mood-labels{display:flex;justify-content:space-between;font-family:"Space Mono",monospace;font-size:6.5px;color:rgba(240,235,225,.2)}
+
+/* symptom chips */
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:1rem 0}
+.chip{font-family:"Space Mono",monospace;font-size:6.5px;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .6rem;border-radius:2px;border:1px solid rgba(240,235,225,.12);color:rgba(240,235,225,.35)}
+.chip.active{background:rgba(168,62,10,.2);border-color:rgba(168,62,10,.5);color:rgba(240,235,225,.8)}
+
+/* calendar dots */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin:1rem 0}
+.cal-dot{aspect-ratio:1;border-radius:50%}
+.cal-dot.good{background:rgba(240,235,225,.5)}
+.cal-dot.ok{background:rgba(240,235,225,.2)}
+.cal-dot.hard{background:rgba(168,62,10,.6)}
+.cal-dot.period{background:rgba(168,62,10,.3);border:1px solid rgba(168,62,10,.6)}
+.cal-dot.empty{background:transparent}
+
+/* insight bar */
+.insight-bar-wrap{margin:1rem 0}
+.insight-bar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem}
+.insight-bar-label{font-family:"Space Mono",monospace;font-size:6px;letter-spacing:.08em;color:rgba(240,235,225,.3);width:60px;flex-shrink:0}
+.insight-bar-track{flex:1;height:3px;background:rgba(240,235,225,.06);border-radius:2px;overflow:hidden}
+.insight-bar-fill{height:100%;border-radius:2px;background:var(--rust)}
+
+/* DECISION */
+.decisions-section{padding:7rem 2.8rem;background:var(--cream)}
+.decisions-heading{font-family:"Bebas Neue",sans-serif;font-size:clamp(3rem,6vw,5.5rem);line-height:.88;color:var(--ink);margin-bottom:4rem;overflow:hidden}
+.decisions-heading .line{display:block;overflow:hidden}
+.decisions-heading .w{display:inline-block;transform:translateY(110%)}
+.decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(20,18,16,.08)}
+.decision-card{background:var(--cream);padding:3rem;opacity:0;transform:translateY(20px)}
+.decision-card-label{font-family:"Space Mono",monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--rust);margin-bottom:1rem}
+.decision-card-title{font-family:"Bebas Neue",sans-serif;font-size:1.8rem;line-height:.95;color:var(--ink);margin-bottom:1rem}
+.decision-card-body{font-family:"EB Garamond",serif;font-size:1.05rem;line-height:1.8;color:var(--muted)}
+
+/* STACK */
+.stack-section{padding:7rem 2.8rem;background:var(--ink)}
+.stack-heading{font-family:"Bebas Neue",sans-serif;font-size:clamp(3rem,6vw,5.5rem);line-height:.88;color:var(--cream);margin-bottom:4rem;overflow:hidden}
+.stack-heading .line{display:block;overflow:hidden}
+.stack-heading .w{display:inline-block;transform:translateY(110%)}
+.stack-items{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(240,235,225,.06)}
+.stack-item{background:var(--ink);padding:2.5rem 2rem;opacity:0;transform:translateY(16px)}
+.stack-item-name{font-family:"Space Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream);margin-bottom:.6rem}
+.stack-item-role{font-family:"EB Garamond",serif;font-style:italic;font-size:.95rem;color:rgba(240,235,225,.35)}
+
+/* OUTCOME */
+.outcome-section{padding:7rem 2.8rem;background:var(--cream)}
+.outcome-grid{display:grid;grid-template-columns:1fr 1fr;gap:8rem;align-items:center}
+.outcome-heading{font-family:"Bebas Neue",sans-serif;font-size:clamp(3rem,6vw,5.5rem);line-height:.88;color:var(--ink);margin-bottom:2rem;overflow:hidden}
+.outcome-heading .line{display:block;overflow:hidden}
+.outcome-heading .w{display:inline-block;transform:translateY(110%)}
+.outcome-body{font-family:"EB Garamond",serif;font-size:1.1rem;line-height:1.88;color:var(--muted);opacity:0;transform:translateY(16px)}
+.outcome-body+.outcome-body{margin-top:1.2rem}
+.outcome-links{display:flex;gap:2rem;margin-top:3rem;opacity:0;transform:translateY(16px)}
+.outcome-link{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink);text-decoration:none;padding-bottom:3px;border-bottom:1px solid var(--rust);transition:color .25s}
+.outcome-link:hover{color:var(--rust)}
+.outcome-stats{display:flex;flex-direction:column;gap:1px;background:rgba(20,18,16,.08)}
+.outcome-stat{background:var(--cream);padding:2.5rem;opacity:0;transform:translateX(20px)}
+.outcome-stat-num{font-family:"Bebas Neue",sans-serif;font-size:3.5rem;line-height:.9;color:var(--ink);margin-bottom:.4rem}
+.outcome-stat-label{font-family:"Space Mono",monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+/* NEXT PROJECT */
+.next-section{padding:8rem 2.8rem;background:var(--ink);text-align:center;position:relative;overflow:hidden}
+.next-bg{position:absolute;inset:0;font-family:"Bebas Neue",sans-serif;font-size:25vw;color:rgba(240,235,225,.025);line-height:1;display:flex;align-items:center;justify-content:center;pointer-events:none;user-select:none}
+.next-pre{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(240,235,225,.25);margin-bottom:1.5rem;opacity:0;transform:translateY(12px)}
+.next-heading{font-family:"Bebas Neue",sans-serif;font-size:clamp(3rem,8vw,7rem);line-height:.88;color:var(--cream);margin-bottom:3rem;overflow:hidden}
+.next-heading .line{display:block;overflow:hidden}
+.next-heading .w{display:inline-block;transform:translateY(110%)}
+.next-link{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(240,235,225,.5);text-decoration:none;padding-bottom:3px;border-bottom:1px solid var(--rust);opacity:0;transform:translateY(12px);display:inline-block;transition:color .25s}
+.next-link:hover{color:var(--cream)}
+
+footer{background:var(--ink);padding:1.8rem 2.8rem;display:flex;justify-content:space-between;border-top:1px solid rgba(240,235,225,.05)}
+.footer-copy{font-family:"Space Mono",monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,235,225,.18)}
+
+/* UTIL */
+.split-line{display:block;overflow:hidden}
+
+@media(max-width:900px){
+  nav{padding:1.3rem 1.8rem}
+  .cs-hero{padding:0 1.8rem 2.5rem}
+  .cs-hero-meta{grid-template-columns:1fr 1fr}
+  .cs-section,.cs-section-dark,.insight-inner,.app-preview,.decisions-section,.stack-section,.outcome-section,.next-section{padding:5rem 1.8rem}
+  .problem-grid,.insight-list,.decision-grid,.outcome-grid{grid-template-columns:1fr;gap:3rem}
+  .stat-row{grid-template-columns:1fr}
+  .stat-cell{border-right:none;border-bottom:1px solid rgba(20,18,16,.08);padding:2rem 1.8rem}
+  .stack-items{grid-template-columns:1fr 1fr}
+  .feature-item{grid-template-columns:50px 1fr;gap:1rem}
+  .feature-desc{grid-column:2}
+  .phones{flex-direction:column;align-items:center}
+  .phone{width:260px}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div id="cursor-dot"></div>
+<div id="cursor-circle"></div>
+
+<nav>
+  <a class="nav-logo" href="index.html">GDL</a>
+  <a class="nav-back" href="index.html"><span class="nav-back-arrow">←</span> Back to work</a>
+</nav>
+
+<!-- HERO -->
+<section class="cs-hero">
+  <div class="cs-hero-bg"><div class="cs-hero-bg-text" aria-hidden="true">PMDD</div></div>
+  <p class="cs-hero-eyebrow" id="csEyebrow">Case Study — 01</p>
+  <h1 class="cs-hero-title" id="csTitle" aria-label="PMDD Journal">
+    <span class="line"><span class="w">PMDD</span></span>
+    <span class="line"><span class="w">Journal</span></span>
+  </h1>
+  <div class="cs-hero-meta" id="csMeta">
+    <div class="cs-hero-meta-item">
+      <p class="cs-meta-label">Role</p>
+      <p class="cs-meta-val">Designer & Developer</p>
+    </div>
+    <div class="cs-hero-meta-item">
+      <p class="cs-meta-label">Type</p>
+      <p class="cs-meta-val">Personal Project</p>
+    </div>
+    <div class="cs-hero-meta-item">
+      <p class="cs-meta-label">Stack</p>
+      <p class="cs-meta-val">HTML · CSS · JS</p>
+    </div>
+    <div class="cs-hero-meta-item">
+      <p class="cs-meta-label">Status</p>
+      <p class="cs-meta-val">Live & Shipped</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="cs-section">
+  <div class="problem-grid">
+    <div>
+      <p class="cs-label" id="probLabel">01 — Problem</p>
+      <h2 class="problem-heading" id="probHeading" aria-label="Nothing was built for this.">
+        <span class="line"><span class="w">Nothing</span></span>
+        <span class="line"><span class="w">was</span> <span class="w">built</span></span>
+        <span class="line"><span class="w">for</span> <span class="w">this.</span></span>
+      </h2>
+    </div>
+    <div>
+      <p class="problem-body" id="pb1">PMDD affects roughly 3–8% of people who menstruate — yet every tracking app on the market treats it as a footnote to general period tracking. Clinical dashboards, sterile UIs, and symptom lists designed for doctors, not for the person living through it.</p>
+      <p class="problem-body" id="pb2">As someone managing PMDD myself, I needed something that understood the emotional and cognitive weight of the luteal phase. Something that made logging feel safe, not like filling out a medical form. So I built it.</p>
+      <div class="problem-quote" id="probQuote">
+        <p>"The best tools are the ones you build because nothing else fits."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAT ROW -->
+<div class="stat-row">
+  <div class="stat-cell" id="stat1">
+    <p class="stat-num">3–8%</p>
+    <p class="stat-desc">of menstruators affected by PMDD globally</p>
+  </div>
+  <div class="stat-cell" id="stat2">
+    <p class="stat-num">7yrs</p>
+    <p class="stat-desc">average time to diagnosis</p>
+  </div>
+  <div class="stat-cell" id="stat3">
+    <p class="stat-num">0</p>
+    <p class="stat-desc">apps designed specifically for PMDD tracking</p>
+  </div>
+</div>
+
+<!-- INSIGHT -->
+<section class="insight-section">
+  <div class="insight-inner">
+    <p class="cs-label cs-label-light" id="insightLabel">02 — Insight</p>
+    <h2 class="insight-heading" id="insightHeading" aria-label="Track the pattern, not just the pain.">
+      <span class="line"><span class="w">Track</span> <span class="w">the</span></span>
+      <span class="line"><span class="w">pattern,</span></span>
+      <span class="line"><span class="w">not</span> <span class="w">just</span></span>
+      <span class="line"><span class="w">the</span> <span class="w">pain.</span></span>
+    </h2>
+    <div class="insight-list">
+      <div class="insight-item" id="ins1">
+        <p class="insight-item-num">01</p>
+        <p class="insight-item-title">Emotional safety first</p>
+        <p class="insight-item-body">Logging symptoms should never feel like a clinical intake form. The language, hierarchy, and visual tone were designed to feel like a personal journal — warm, private, yours.</p>
+      </div>
+      <div class="insight-item" id="ins2">
+        <p class="insight-item-num">02</p>
+        <p class="insight-item-title">Zero data leaves your device</p>
+        <p class="insight-item-body">Health data is deeply personal. No accounts, no servers, no tracking. Everything lives in localStorage — a deliberate architectural decision that is itself a design statement.</p>
+      </div>
+      <div class="insight-item" id="ins3">
+        <p class="insight-item-num">03</p>
+        <p class="insight-item-title">The luteal phase is the story</p>
+        <p class="insight-item-body">PMDD symptoms emerge in the 1–2 weeks before menstruation. The app was built around surfacing that window — helping users see the connection between their cycle phase and their emotional state.</p>
+      </div>
+      <div class="insight-item" id="ins4">
+        <p class="insight-item-num">04</p>
+        <p class="insight-item-title">Streaks as motivation, not pressure</p>
+        <p class="insight-item-body">Consistent logging is what generates meaningful insight. But tracking streaks when you're having a hard day adds guilt. The design treats streaks as encouragement, never punishment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="cs-section">
+  <p class="cs-label" id="featLabel">03 — Features</p>
+  <h2 class="features-heading" id="featHeading" aria-label="Everything it does.">
+    <span class="line"><span class="w">Everything</span></span>
+    <span class="line"><span class="w">it</span> <span class="w">does.</span></span>
+  </h2>
+  <div class="feature-list">
+    <div class="feature-item" id="f1">
+      <span class="feature-num">01</span>
+      <span class="feature-name">Daily Check-in</span>
+      <span class="feature-desc">Mood on a 1–10 scale, energy slider, emotional and physical symptom selection, period status and flow intensity, free-write journal reflection, and a gratitude note. Everything in one session.</span>
+    </div>
+    <div class="feature-item" id="f2">
+      <span class="feature-num">02</span>
+      <span class="feature-name">Calendar View</span>
+      <span class="feature-desc">Every logged day color-coded by mood at a glance. Good days, neutral days, hard days, and period days each have a distinct visual treatment. Click any day to see the full entry.</span>
+    </div>
+    <div class="feature-item" id="f3">
+      <span class="feature-num">03</span>
+      <span class="feature-name">Insights Dashboard</span>
+      <span class="feature-desc">Total entries logged, average mood, current streak, period days tracked, mood-over-time chart, most frequent symptoms, and energy trends over the last 30 days.</span>
+    </div>
+    <div class="feature-item" id="f4">
+      <span class="feature-num">04</span>
+      <span class="feature-name">Cycle Tracker</span>
+      <span class="feature-desc">Log cycle start and end dates, view cycle history, and see a luteal phase guide that contextualizes when PMDD symptoms are most likely to emerge within your personal cycle.</span>
+    </div>
+    <div class="feature-item" id="f5">
+      <span class="feature-num">05</span>
+      <span class="feature-name">Full Privacy</span>
+      <span class="feature-desc">No sign-up, no server, no analytics. All data stored locally in the browser via localStorage. The app works offline. Your health data is entirely yours.</span>
+    </div>
+  </div>
+</section>
+
+<!-- APP PREVIEW — rendered mock UI -->
+<section class="app-preview">
+  <p class="cs-label cs-label-light" id="previewLabel">04 — The Interface</p>
+  <h2 class="app-preview-heading" id="previewHeading" aria-label="Built to feel like yours.">
+    <span class="line"><span class="w">Built</span> <span class="w">to</span></span>
+    <span class="line"><span class="w">feel</span> <span class="w">like</span></span>
+    <span class="line"><span class="w">yours.</span></span>
+  </h2>
+
+  <div class="phones">
+
+    <!-- PHONE 1: Daily check-in -->
+    <div class="phone" id="phone1" style="transform:translateY(40px) rotate(-2deg)">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-nav">
+            <span class="phone-nav-title">☾ PMDD Journal</span>
+            <span class="phone-nav-icon"></span>
+          </div>
+          <div class="phone-section-label">Today's Check-in</div>
+          <div class="phone-heading">How are you feeling overall?</div>
+          <div class="mood-track">
+            <div class="mood-fill"></div>
+            <div class="mood-thumb"></div>
+          </div>
+          <div class="mood-labels"><span>Difficult</span><span>Great</span></div>
+
+          <div style="margin-top:1.4rem">
+            <div class="phone-section-label">Emotional symptoms</div>
+            <div class="chips">
+              <span class="chip active">Anxiety</span>
+              <span class="chip active">Brain Fog</span>
+              <span class="chip active">Overwhelm</span>
+              <span class="chip">Irritability</span>
+              <span class="chip">Depression</span>
+              <span class="chip">Mood Swings</span>
+              <span class="chip">Crying Spells</span>
+            </div>
+          </div>
+
+          <div style="margin-top:1rem">
+            <div class="phone-section-label">Physical symptoms</div>
+            <div class="chips">
+              <span class="chip active">Fatigue</span>
+              <span class="chip active">Bloating</span>
+              <span class="chip">Cramps</span>
+              <span class="chip">Headache</span>
+              <span class="chip">Sleep Issues</span>
+            </div>
+          </div>
+
+          <div style="margin-top:1.2rem;padding:.8rem 1rem;background:rgba(168,62,10,.12);border-radius:4px;border:1px solid rgba(168,62,10,.25)">
+            <div class="phone-section-label" style="margin-bottom:.3rem">Period tracking</div>
+            <div style="font-family:'Space Mono',monospace;font-size:7px;color:rgba(240,235,225,.5)">Flow: Medium</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHONE 2: Calendar -->
+    <div class="phone" id="phone2" style="transform:translateY(40px) rotate(1deg);margin-top:-3rem">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-nav">
+            <span class="phone-nav-title">Calendar</span>
+            <span class="phone-nav-icon"></span>
+          </div>
+          <div class="phone-section-label">Your logged days at a glance</div>
+
+          <div style="display:flex;justify-content:space-between;margin-bottom:.5rem">
+            <span style="font-family:'Space Mono',monospace;font-size:7px;color:rgba(240,235,225,.2)">M</span>
+            <span style="font-family:'Space Mono',monospace;font-size:7px;color:rgba(240,235,225,.2)">T</span>
+            <span style="font-family:'Space Mono',monospace;font-size:7px;color:rgba(240,235,225,.2)">W</span>
+            <span style="font-family:'Space Mono',monospace;font-size:7px;color:rgba(240,235,225,.2)">T</span>
+            <span style="font-family:'Space Mono',monospace;font-size:7px;color:rgba(240,235,225,.2)">F</span>
+            <span style="font-family:'Space Mono',monospace;font-size:7px;color:rgba(240,235,225,.2)">S</span>
+            <span style="font-family:'Space Mono',monospace;font-size:7px;color:rgba(240,235,225,.2)">S</span>
+          </div>
+
+          <div class="cal-grid">
+            <div class="cal-dot empty"></div><div class="cal-dot empty"></div>
+            <div class="cal-dot period"></div><div class="cal-dot period"></div>
+            <div class="cal-dot period"></div><div class="cal-dot hard"></div>
+            <div class="cal-dot hard"></div>
+            <div class="cal-dot hard"></div><div class="cal-dot ok"></div>
+            <div class="cal-dot ok"></div><div class="cal-dot good"></div>
+            <div class="cal-dot good"></div><div class="cal-dot good"></div>
+            <div class="cal-dot good"></div>
+            <div class="cal-dot good"></div><div class="cal-dot good"></div>
+            <div class="cal-dot good"></div><div class="cal-dot ok"></div>
+            <div class="cal-dot ok"></div><div class="cal-dot ok"></div>
+            <div class="cal-dot hard"></div>
+            <div class="cal-dot hard"></div><div class="cal-dot hard"></div>
+            <div class="cal-dot hard"></div><div class="cal-dot period"></div>
+            <div class="cal-dot period"></div><div class="cal-dot period"></div>
+            <div class="cal-dot period"></div>
+            <div class="cal-dot empty"></div><div class="cal-dot empty"></div>
+            <div class="cal-dot empty"></div><div class="cal-dot empty"></div>
+          </div>
+
+          <div style="display:flex;gap:.8rem;margin-top:1rem;flex-wrap:wrap">
+            <span style="display:flex;align-items:center;gap:.3rem;font-family:'Space Mono',monospace;font-size:6px;color:rgba(240,235,225,.3)"><span style="width:6px;height:6px;border-radius:50%;background:rgba(240,235,225,.5);flex-shrink:0"></span>Good</span>
+            <span style="display:flex;align-items:center;gap:.3rem;font-family:'Space Mono',monospace;font-size:6px;color:rgba(240,235,225,.3)"><span style="width:6px;height:6px;border-radius:50%;background:rgba(240,235,225,.2);flex-shrink:0"></span>Neutral</span>
+            <span style="display:flex;align-items:center;gap:.3rem;font-family:'Space Mono',monospace;font-size:6px;color:rgba(240,235,225,.3)"><span style="width:6px;height:6px;border-radius:50%;background:rgba(168,62,10,.6);flex-shrink:0"></span>Hard</span>
+            <span style="display:flex;align-items:center;gap:.3rem;font-family:'Space Mono',monospace;font-size:6px;color:rgba(240,235,225,.3)"><span style="width:6px;height:6px;border-radius:50%;background:rgba(168,62,10,.3);border:1px solid rgba(168,62,10,.6);flex-shrink:0"></span>Period</span>
+          </div>
+
+          <div style="margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid rgba(240,235,225,.06)">
+            <div class="phone-section-label">Insights snapshot</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.6rem">
+              <div style="background:rgba(240,235,225,.04);padding:.7rem;border-radius:3px">
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:rgba(240,235,225,.7);line-height:1">24</div>
+                <div style="font-family:'Space Mono',monospace;font-size:6px;letter-spacing:.1em;color:rgba(240,235,225,.25);text-transform:uppercase">Entries</div>
+              </div>
+              <div style="background:rgba(240,235,225,.04);padding:.7rem;border-radius:3px">
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:rgba(240,235,225,.7);line-height:1">6.4</div>
+                <div style="font-family:'Space Mono',monospace;font-size:6px;letter-spacing:.1em;color:rgba(240,235,225,.25);text-transform:uppercase">Avg Mood</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHONE 3: Insights -->
+    <div class="phone" id="phone3" style="transform:translateY(40px) rotate(2.5deg)">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-nav">
+            <span class="phone-nav-title">Insights</span>
+            <span class="phone-nav-icon"></span>
+          </div>
+          <div class="phone-section-label">Patterns from your journal</div>
+
+          <div class="phone-heading">Most frequent symptoms</div>
+          <div class="insight-bar-wrap">
+            <div class="insight-bar-row">
+              <span class="insight-bar-label">Brain Fog</span>
+              <div class="insight-bar-track"><div class="insight-bar-fill" style="width:88%"></div></div>
+            </div>
+            <div class="insight-bar-row">
+              <span class="insight-bar-label">Fatigue</span>
+              <div class="insight-bar-track"><div class="insight-bar-fill" style="width:82%"></div></div>
+            </div>
+            <div class="insight-bar-row">
+              <span class="insight-bar-label">Anxiety</span>
+              <div class="insight-bar-track"><div class="insight-bar-fill" style="width:74%"></div></div>
+            </div>
+            <div class="insight-bar-row">
+              <span class="insight-bar-label">Overwhelm</span>
+              <div class="insight-bar-track"><div class="insight-bar-fill" style="width:65%"></div></div>
+            </div>
+            <div class="insight-bar-row">
+              <span class="insight-bar-label">Bloating</span>
+              <div class="insight-bar-track"><div class="insight-bar-fill" style="width:58%"></div></div>
+            </div>
+          </div>
+
+          <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(240,235,225,.06)">
+            <div class="phone-section-label" style="margin-bottom:.8rem">Luteal phase guide</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px">
+              <div style="background:rgba(168,62,10,.35);padding:.4rem;border-radius:2px;text-align:center">
+                <div style="font-family:'Space Mono',monospace;font-size:6px;color:rgba(240,235,225,.6)">MENS</div>
+                <div style="font-family:'Space Mono',monospace;font-size:5px;color:rgba(240,235,225,.3);margin-top:2px">1–5</div>
+              </div>
+              <div style="background:rgba(240,235,225,.04);padding:.4rem;border-radius:2px;text-align:center">
+                <div style="font-family:'Space Mono',monospace;font-size:6px;color:rgba(240,235,225,.4)">FOLL</div>
+                <div style="font-family:'Space Mono',monospace;font-size:5px;color:rgba(240,235,225,.2);margin-top:2px">6–13</div>
+              </div>
+              <div style="background:rgba(240,235,225,.06);padding:.4rem;border-radius:2px;text-align:center">
+                <div style="font-family:'Space Mono',monospace;font-size:6px;color:rgba(240,235,225,.5)">OVL</div>
+                <div style="font-family:'Space Mono',monospace;font-size:5px;color:rgba(240,235,225,.2);margin-top:2px">14</div>
+              </div>
+              <div style="background:rgba(168,62,10,.2);padding:.4rem;border-radius:2px;text-align:center;border:1px solid rgba(168,62,10,.4)">
+                <div style="font-family:'Space Mono',monospace;font-size:6px;color:var(--rust)">LUT</div>
+                <div style="font-family:'Space Mono',monospace;font-size:5px;color:rgba(168,62,10,.6);margin-top:2px">15–28</div>
+              </div>
+            </div>
+            <p style="font-family:'EB Garamond',serif;font-style:italic;font-size:.75rem;color:rgba(240,235,225,.3);line-height:1.5;margin-top:.8rem">PMDD symptoms typically emerge during the luteal phase — the 1–2 weeks before your period.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGN DECISIONS -->
+<section class="decisions-section">
+  <p class="cs-label" id="decLabel">05 — Design Decisions</p>
+  <h2 class="decisions-heading" id="decHeading" aria-label="Why it works the way it does.">
+    <span class="line"><span class="w">Why</span> <span class="w">it</span> <span class="w">works</span></span>
+    <span class="line"><span class="w">the</span> <span class="w">way</span> <span class="w">it</span> <span class="w">does.</span></span>
+  </h2>
+  <div class="decision-grid">
+    <div class="decision-card" id="dc1">
+      <p class="decision-card-label">Privacy by architecture</p>
+      <p class="decision-card-title">No server. No account. No leaks.</p>
+      <p class="decision-card-body">The decision to store everything in localStorage wasn't a technical shortcut — it was a design statement. Health data, especially around mental health and menstruation, is deeply stigmatized. Users needed to trust the tool before they'd use it honestly.</p>
+    </div>
+    <div class="decision-card" id="dc2">
+      <p class="decision-card-label">Language & tone</p>
+      <p class="decision-card-title">Soft where clinical would be cold.</p>
+      <p class="decision-card-body">Every label, prompt, and empty state was written to feel like a journal, not a form. "How are you feeling?" instead of "Rate your mood." "One thing I'm grateful for" instead of "Notes." The words do as much design work as the layout.</p>
+    </div>
+    <div class="decision-card" id="dc3">
+      <p class="decision-card-label">Color as communication</p>
+      <p class="decision-card-title">The calendar tells the story at a glance.</p>
+      <p class="decision-card-body">Color-coding in the calendar view — good days, neutral days, hard days, period days — lets users see their cycle patterns without reading a single number. Pattern recognition is the whole point.</p>
+    </div>
+    <div class="decision-card" id="dc4">
+      <p class="decision-card-label">Gratitude as a feature</p>
+      <p class="decision-card-title">Ending on something good.</p>
+      <p class="decision-card-body">Ending each daily check-in with a gratitude note is deliberate. On hard days, it's grounding. On good days, it's amplifying. It shifts the emotional register of the whole logging session.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section class="stack-section">
+  <p class="cs-label cs-label-light" id="stackLabel">06 — Stack</p>
+  <h2 class="stack-heading" id="stackHeading" aria-label="Built from scratch.">
+    <span class="line"><span class="w">Built</span> <span class="w">from</span></span>
+    <span class="line"><span class="w">scratch.</span></span>
+  </h2>
+  <div class="stack-items">
+    <div class="stack-item" id="sk1">
+      <p class="stack-item-name">HTML / CSS</p>
+      <p class="stack-item-role">Structure & all visual design — no frameworks</p>
+    </div>
+    <div class="stack-item" id="sk2">
+      <p class="stack-item-name">Vanilla JS</p>
+      <p class="stack-item-role">App logic, state management, DOM manipulation</p>
+    </div>
+    <div class="stack-item" id="sk3">
+      <p class="stack-item-name">localStorage</p>
+      <p class="stack-item-role">All data storage — private, offline, permanent</p>
+    </div>
+    <div class="stack-item" id="sk4">
+      <p class="stack-item-name">Chart.js</p>
+      <p class="stack-item-role">Mood & energy visualizations in the insights view</p>
+    </div>
+    <div class="stack-item" id="sk5">
+      <p class="stack-item-name">GitHub Pages</p>
+      <p class="stack-item-role">Deployed and live — zero cost, zero backend</p>
+    </div>
+    <div class="stack-item" id="sk6">
+      <p class="stack-item-name">Solo</p>
+      <p class="stack-item-role">Designed and built end-to-end, no team</p>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOME -->
+<section class="outcome-section">
+  <div class="outcome-grid">
+    <div>
+      <p class="cs-label" id="outLabel">07 — Outcome</p>
+      <h2 class="outcome-heading" id="outHeading" aria-label="Shipped. Used. Mine.">
+        <span class="line"><span class="w">Shipped.</span></span>
+        <span class="line"><span class="w">Used.</span></span>
+        <span class="line"><span class="w">Mine.</span></span>
+      </h2>
+      <p class="outcome-body" id="ob1">The app is live and I use it daily. That's the metric that matters most — a tool built out of personal necessity that actually became part of my routine.</p>
+      <p class="outcome-body" id="ob2">As a solo designer-developer project, it demonstrates the full stack of skills: identifying a real gap, defining the user experience, making deliberate design decisions, writing the code, and shipping something that works.</p>
+      <div class="outcome-links" id="outLinks">
+        <a class="outcome-link" href="https://switchblade-tsu.github.io/pmdd-journal" target="_blank">View live app ↗</a>
+        <a class="outcome-link" href="https://github.com/switchblade-tsu/pmdd-journal" target="_blank">GitHub repo ↗</a>
+      </div>
+    </div>
+    <div class="outcome-stats">
+      <div class="outcome-stat" id="os1">
+        <p class="outcome-stat-num">5</p>
+        <p class="outcome-stat-label">Core screens designed</p>
+      </div>
+      <div class="outcome-stat" id="os2">
+        <p class="outcome-stat-num">12+</p>
+        <p class="outcome-stat-label">Tracked data points per day</p>
+      </div>
+      <div class="outcome-stat" id="os3">
+        <p class="outcome-stat-num">100%</p>
+        <p class="outcome-stat-label">Private — zero data leaves the device</p>
+      </div>
+      <div class="outcome-stat" id="os4">
+        <p class="outcome-stat-num">Solo</p>
+        <p class="outcome-stat-label">Design + development, end to end</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEXT -->
+<section class="next-section">
+  <div class="next-bg" aria-hidden="true">NEXT</div>
+  <p class="next-pre" id="nextPre">More work</p>
+  <h2 class="next-heading" id="nextHeading" aria-label="Back to all projects.">
+    <span class="line"><span class="w">Back</span> <span class="w">to</span></span>
+    <span class="line"><span class="w">all</span> <span class="w">projects.</span></span>
+  </h2>
+  <a class="next-link" href="index.html#work" id="nextLink">View all work →</a>
+</section>
+
+<footer>
+  <p class="footer-copy">&copy; 2025 Genesis De Leon</p>
+  <p class="footer-copy">Brooklyn, New York</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ── CURSOR ── */
+const dot = document.getElementById('cursor-dot');
+const circ = document.getElementById('cursor-circle');
+let mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove', e=>{
+  mx=e.clientX; my=e.clientY;
+  gsap.to(dot,{x:mx,y:my,duration:.08,ease:'none'});
+});
+(function raf(){cx+=(mx-cx)*.1;cy+=(my-cy)*.1;gsap.set(circ,{x:cx,y:cy});requestAnimationFrame(raf)})();
+document.querySelectorAll('a').forEach(el=>{
+  el.addEventListener('mouseenter',()=>gsap.to([dot,circ],{scale:2.5,duration:.3}));
+  el.addEventListener('mouseleave',()=>gsap.to([dot,circ],{scale:1,duration:.3}));
+});
+
+/* ── HERO ── */
+const heroTL = gsap.timeline({delay:.2});
+heroTL
+  .to('#csEyebrow',{opacity:1,y:0,duration:.8,ease:'power3.out'})
+  .to('#csTitle .w',{y:'0%',duration:1.2,ease:'expo.out',stagger:.1},'-=.5')
+  .to('#csMeta',{opacity:1,y:0,duration:.9,ease:'power3.out'},'-=.6');
+
+/* ── HELPER: animated heading ── */
+function animHeading(id, start='top 84%'){
+  document.querySelectorAll(`${id} .w`).forEach((w,i)=>{
+    gsap.to(w,{y:'0%',duration:1.1,ease:'expo.out',delay:i*.07,
+      scrollTrigger:{trigger:id,start,toggleActions:'play none none none'}});
+  });
+}
+
+/* ── HELPER: fade up ── */
+function fadeUp(els, trigger, stagger=.1, delay=0){
+  gsap.to(els,{opacity:1,y:0,stagger,duration:.9,ease:'power3.out',delay,
+    scrollTrigger:{trigger,start:'top 84%',toggleActions:'play none none none'}});
+}
+
+/* ── PROBLEM ── */
+gsap.to('#probLabel',{opacity:1,y:0,duration:.8,scrollTrigger:{trigger:'#probLabel',start:'top 88%',toggleActions:'play none none none'}});
+animHeading('#probHeading');
+fadeUp(['#pb1','#pb2','#probQuote'],'.problem-grid',.12,.2);
+
+/* ── STATS ── */
+['#stat1','#stat2','#stat3'].forEach((id,i)=>{
+  gsap.to(id,{opacity:1,y:0,duration:.9,ease:'power3.out',delay:i*.1,
+    scrollTrigger:{trigger:'.stat-row',start:'top 85%',toggleActions:'play none none none'}});
+});
+
+/* ── INSIGHT ── */
+gsap.to('#insightLabel',{opacity:1,y:0,duration:.8,scrollTrigger:{trigger:'#insightLabel',start:'top 88%',toggleActions:'play none none none'}});
+animHeading('#insightHeading');
+['#ins1','#ins2','#ins3','#ins4'].forEach((id,i)=>{
+  gsap.to(id,{opacity:1,y:0,duration:.9,ease:'power3.out',delay:i*.1,
+    scrollTrigger:{trigger:'.insight-list',start:'top 85%',toggleActions:'play none none none'}});
+});
+
+/* ── FEATURES ── */
+gsap.to('#featLabel',{opacity:1,y:0,duration:.8,scrollTrigger:{trigger:'#featLabel',start:'top 88%',toggleActions:'play none none none'}});
+animHeading('#featHeading');
+['#f1','#f2','#f3','#f4','#f5'].forEach((id,i)=>{
+  gsap.to(id,{opacity:1,y:0,duration:.9,ease:'power3.out',delay:i*.08,
+    scrollTrigger:{trigger:'.feature-list',start:'top 85%',toggleActions:'play none none none'}});
+});
+
+/* ── PHONES ── */
+gsap.to('#previewLabel',{opacity:1,y:0,duration:.8,scrollTrigger:{trigger:'#previewLabel',start:'top 88%',toggleActions:'play none none none'}});
+animHeading('#previewHeading');
+['#phone1','#phone2','#phone3'].forEach((id,i)=>{
+  gsap.to(id,{opacity:1,y:0,rotate: i===0 ? -2 : i===1 ? 1 : 2.5,
+    duration:1.2,ease:'expo.out',delay:i*.15,
+    scrollTrigger:{trigger:'.phones',start:'top 85%',toggleActions:'play none none none'}});
+});
+
+/* ── DECISIONS ── */
+gsap.to('#decLabel',{opacity:1,y:0,duration:.8,scrollTrigger:{trigger:'#decLabel',start:'top 88%',toggleActions:'play none none none'}});
+animHeading('#decHeading');
+['#dc1','#dc2','#dc3','#dc4'].forEach((id,i)=>{
+  gsap.to(id,{opacity:1,y:0,duration:.9,ease:'power3.out',delay:i*.1,
+    scrollTrigger:{trigger:'.decision-grid',start:'top 85%',toggleActions:'play none none none'}});
+});
+
+/* ── STACK ── */
+gsap.to('#stackLabel',{opacity:1,y:0,duration:.8,scrollTrigger:{trigger:'#stackLabel',start:'top 88%',toggleActions:'play none none none'}});
+animHeading('#stackHeading');
+['#sk1','#sk2','#sk3','#sk4','#sk5','#sk6'].forEach((id,i)=>{
+  gsap.to(id,{opacity:1,y:0,duration:.9,ease:'power3.out',delay:i*.07,
+    scrollTrigger:{trigger:'.stack-items',start:'top 85%',toggleActions:'play none none none'}});
+});
+
+/* ── OUTCOME ── */
+gsap.to('#outLabel',{opacity:1,y:0,duration:.8,scrollTrigger:{trigger:'#outLabel',start:'top 88%',toggleActions:'play none none none'}});
+animHeading('#outHeading');
+fadeUp(['#ob1','#ob2','#outLinks'],'.outcome-grid',.12,.2);
+['#os1','#os2','#os3','#os4'].forEach((id,i)=>{
+  gsap.to(id,{opacity:1,x:0,duration:.9,ease:'power3.out',delay:i*.1,
+    scrollTrigger:{trigger:'.outcome-stats',start:'top 85%',toggleActions:'play none none none'}});
+});
+
+/* ── NEXT ── */
+gsap.to('#nextPre',{opacity:1,y:0,duration:.8,scrollTrigger:{trigger:'#nextPre',start:'top 88%',toggleActions:'play none none none'}});
+animHeading('#nextHeading','top 84%');
+gsap.to('#nextLink',{opacity:1,y:0,duration:.8,delay:.3,scrollTrigger:{trigger:'#nextHeading',start:'top 80%',toggleActions:'play none none none'}});
+
+window.addEventListener('load',()=>ScrollTrigger.refresh());
+</script>
+</body>
+</html>
